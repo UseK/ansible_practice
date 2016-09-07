@@ -1,12 +1,15 @@
 - name: Configure webserver ningx
   hosts: webservers
   become: True
+  vars:
+    key_file: /etc/nginx/ssl/nginx.key
+    conf_file: /etc/nginx/sites-available/defailt
   tasks:
     - name: install nginx
       apt: name=nginx update_cache=yes
 
     - name: copy nginx config file
-      copy: src=files/nginx.conf dest=/etc/nginx/sites-available/default
+      copy: src=files/nginx.conf dest={{ conf_file }}
 
     - name: enable configuration
       file: >

@@ -1,5 +1,5 @@
 - name: Configure webserver ningx
-  hosts: webservers
+  hosts: vagrant1
   become: True
   vars:
     key_file: /etc/nginx/ssl/nginx.key
@@ -7,6 +7,9 @@
     conf_file: /etc/nginx/sites-available/default
     server_name: localhost
   tasks:
+    - name: install rbenv
+      apt: name=rbenv update_cache=yes
+
     - name: install nginx
       apt: name=nginx update_cache=yes cache_valid_time=3600
 

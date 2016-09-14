@@ -6,9 +6,56 @@
     cert_file: /etc/nginx/ssl/nginx.crt
     conf_file: /etc/nginx/sites-available/default
     server_name: localhost
+    rbenv_repo: https://github.com/rbenv/rbenv.git
+    ruby_build_repo: https://github.com/rbenv/ruby-build.git
   tasks:
-    - name: install rbenv
-      apt: name=rbenv update_cache=yes
+    - name: install rbenv with apt
+      apt:
+        name: rbenv
+        update_cache: yes
+
+    - name: install git
+      apt:
+        name: git
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: clone rbenv repository
+      git:
+        repo: "{{ rbenv_repo }}"
+        dest: "{{ rbenv_root }}"
+
+    - name: clone ruby-build repository
+      git:
+        repo: "{{ ruby_build_repo }}"
+        dest: "{{ ruby_build_root }}"
+
+    - name: prepare to install ruby, libssl-dev
+      apt:
+        name: libssl-dev
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: prepare to install ruby, libreadline-dev
+      apt:
+        name: libreadline-dev
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: prepare to install ruby, zlib1g-dev
+      apt:
+        name: zlib1g-dev
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: install ruby {{ ruby_version }}
+      shell: "rbenv install {{ ruby_version}}"
+
+    - name: use ruby {{ ruby_version }}(1/2)
+      shell: "rbenv global {{ ruby_version}}"
+
+    - name: use ruby {{ ruby_version }}(2/2)
+      shell: "rbenv rehash {{ ruby_version}}"
 
     - name: install nginx
       apt: name=nginx update_cache=yes cache_valid_time=3600

@@ -3,3 +3,4 @@ rbenv_root: "{{ ansible_env.HOME }}/.rbenv"
 ruby_build_root: "{{ rbenv_root }}/plugins/ruby-build"
 os_user: usek
 bash_profile: "{{ ansible_env.HOME }}/.bash_profile"
+bashrc: "{{ ansible_env.HOME }}/.bashrc"

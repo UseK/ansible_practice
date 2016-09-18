@@ -9,6 +9,14 @@
     rbenv_repo: https://github.com/rbenv/rbenv.git
     ruby_build_repo: https://github.com/rbenv/ruby-build.git
   tasks:
+    - name: check installed ruby which rbenv
+      shell: "rbenv versions"
+      register: rbenv_versions
+
+    - name: show installed ruby which rbenv
+      debug:
+        var: rbenv_versions
+
     - name: install rbenv with apt
       apt:
         name: rbenv
@@ -30,6 +38,14 @@
         repo: "{{ ruby_build_repo }}"
         dest: "{{ ruby_build_root }}"
 
+    - name: copy .bashrc
+      copy:
+        src: files/.bashrc
+        dest: "{{ bashrc }}"
+
+    - name: source .bashrc
+      shell: ". {{ bashrc }}"
+
     - name: prepare to install ruby, libssl-dev
       apt:
         name: libssl-dev
@@ -50,6 +66,8 @@
 
     - name: install ruby {{ ruby_version }}
       shell: "rbenv install {{ ruby_version}}"
+      when: rbenv_versions.stdout != "  system\n* 2.3.1 (set by /root/.rbenv/version)"
+
 
     - name: use ruby {{ ruby_version }}(1/2)
       shell: "rbenv global {{ ruby_version}}"

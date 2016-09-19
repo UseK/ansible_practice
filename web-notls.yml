@@ -23,6 +23,7 @@
         update_cache: yes
 
     - name: install git
+      become: yes
       apt:
         name: git
         update_cache: yes
@@ -47,18 +48,21 @@
       shell: ". {{ bashrc }}"
 
     - name: prepare to install ruby, libssl-dev
+      become: yes
       apt:
         name: libssl-dev
         update_cache: yes
         cache_valid_time: 3600
 
     - name: prepare to install ruby, libreadline-dev
+      become: yes
       apt:
         name: libreadline-dev
         update_cache: yes
         cache_valid_time: 3600
 
     - name: prepare to install ruby, zlib1g-dev
+      become: yes
       apt:
         name: zlib1g-dev
         update_cache: yes
@@ -80,12 +84,12 @@
     - name: use ruby {{ ruby_version }}(2/2)
       shell: "rbenv rehash {{ ruby_version}}"
 
-    - name: install rails gem {{ rails_version }}
+    - name: install bundler
       gem:
-        name: rails
-        version: "{{ rails_version }}"
+        name: bundler
 
     - name: install nginx
+      become: yes
       apt:
         name: nginx
         update_cache: yes
@@ -97,6 +101,7 @@
         state: directory
 
     - name: copy TLS key
+      become: yes
       copy:
         src: files/nginx.key
         dest: "{{ key_file }}"
@@ -105,18 +110,21 @@
       notify: restart nginx
 
     - name: copy TLS certificate
+      become: yes
       copy:
         src: files/nginx.crt
         dest: "{{ cert_file }}"
       notify: restart nginx
 
     - name: copy nginx config file
+      become: yes
       template:
         src: templates/nginx.conf.j2
         dest: "{{ conf_file }}"
       notify: restart nginx
 
     - name: enable configuration
+      become: yes
       file:
         dest: /etc/nginx/sites-enabled/default
         src: "{{ conf_file }}"
@@ -131,6 +139,7 @@
 
   handlers:
     - name: restart nginx
+      become: yes
       service:
        name: nginx
        state: restarted

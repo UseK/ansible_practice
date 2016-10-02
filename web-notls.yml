@@ -75,7 +75,7 @@
 
     - name: install ruby {{ ruby_version }}
       shell: "rbenv install {{ ruby_version}}"
-      when: rbenv_versions.stdout.find("{{ ruby_version }}") == -1
+      when: rbenv_versions.stdout.find( "{{ ruby_version }}" ) == -1
 
 
     - name: use ruby {{ ruby_version }}(1/2)

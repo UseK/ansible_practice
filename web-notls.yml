@@ -8,14 +8,6 @@
     rbenv_repo: https://github.com/rbenv/rbenv.git
     ruby_build_repo: https://github.com/rbenv/ruby-build.git
   tasks:
-    - name: printout ruby
-      shell: "rbenv versions"
-      register: which_gem
-
-    - name: printout ruby
-      debug:
-        msg: "{{ ansible_env.HOME }}"
-
     - name: install rbenv with apt
       become: yes
       apt:
@@ -46,6 +38,7 @@
 
     - name: source .bashrc
       shell: ". {{ bashrc }}"
+      changed_when: false
 
     - name: prepare to install ruby, libssl-dev
       become: yes
@@ -80,9 +73,11 @@
 
     - name: use ruby {{ ruby_version }}(1/2)
       shell: "rbenv global {{ ruby_version}}"
+      changed_when: false
 
     - name: use ruby {{ ruby_version }}(2/2)
       shell: "rbenv rehash {{ ruby_version}}"
+      changed_when: false
 
     - name: install bundler
       gem:

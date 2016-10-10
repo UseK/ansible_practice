@@ -1,0 +1,1 @@
+stage  ansible_ssh_host=192.168.1.1 ansible_ssh_port=22   ansible_ssh_user=yourname ansible_ssh_pass=yourpass ansible_sudo_pass=yourpass ansible_python_interpreter=/usr/bin/python2.7

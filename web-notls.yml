@@ -1,5 +1,12 @@
+- name: Install python 2.7 in Ubuntu 16
+  hosts: stage
+  gather_facts: no
+  tasks:
+    - become: yes
+      raw: apt-get update && apt-get install python2.7
+
 - name: Configure webserver ningx
-  hosts: vagrant1
+  hosts: stage
   vars:
     key_file: /etc/nginx/ssl/nginx.key
     cert_file: /etc/nginx/ssl/nginx.crt
@@ -8,6 +15,18 @@
     rbenv_repo: https://github.com/rbenv/rbenv.git
     ruby_build_repo: https://github.com/rbenv/ruby-build.git
   tasks:
+    - name: install gcc with apt
+      become: yes
+      apt:
+        name: gcc
+        update_cache: yes
+
+    - name: install make with apt
+      become: yes
+      apt:
+        name: make
+        update_cache: yes
+
     - name: install rbenv with apt
       become: yes
       apt:
@@ -91,6 +110,7 @@
         cache_valid_time: 3600
 
     - name: create directories for ssl certificates
+      become: yes
       file:
         path: /etc/nginx/ssl
         state: directory
@@ -127,10 +147,17 @@
       notify: restart nginx
 
     - name: copy index.html
+      become: true
       template:
         src: templates/index.html.j2
         dest: /usr/share/nginx/html/index.html
         mode: 0644
+
+    - name: restart nginx in anyway
+      become: yes
+      service:
+       name: nginx
+       state: restarted
 
   handlers:
     - name: restart nginx
